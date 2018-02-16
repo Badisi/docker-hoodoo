@@ -1,0 +1,84 @@
+#!/bin/sh
+
+WORKSPACE="/Users/Badisi/Workspace"
+#M2="/Users/Badisi/.m2"
+#SSH="/Users/Badisi/.ssh"
+#X11="mac" # ("mac" or "win")
+
+IMAGE="badisi/hoodoo:latest"
+CONTAINER="hoodoo"
+
+# ------------------------------
+
+# Install XQUARTZ on macOS to make this work..
+run_mac_x11_server() {
+	defaults write org.macosforge.xquartz.X11 nolisten_tcp -int 0
+	xhost 127.0.0.1
+}
+
+docker_exec() {
+	docker exec -it $CONTAINER /bin/bash
+}
+
+docker_start() {
+	docker start $CONTAINER
+	docker_exec
+}
+
+docker_run() {
+	ARGS="-it --name $CONTAINER -p 4200:4200 -p 54080:54080"
+	if [ $X11 ]; then
+		ARGS="$ARGS -e DISPLAY=docker.for.$X11.localhost:0 -v /tmp/.X11-unix:/tmp/.X11-unix"
+	fi
+	if [ $WORKSPACE ]; then
+		ARGS="$ARGS --mount type=bind,consistency=cached,source=$WORKSPACE,target=/home/hoodoo/workspace"
+	fi
+	if [ $M2 ]; then
+		ARGS="$ARGS --mount type=bind,consistency=cached,source=$M2,target=/home/hoodoo/.m2"
+	fi
+	if [ $SSH ]; then
+		ARGS="$ARGS -v $SSH:/home/hoodoo/.ssh"
+	fi
+
+	docker run $ARGS $IMAGE
+}
+
+main() {
+	if [ "x$(which docker)" == "x" ]; then
+	  	printf "(error) Missing docker binary\n"
+	  	exit 3
+	fi
+
+	docker info > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+	  	printf "(error) Unable to talk to the docker daemon\n"
+	  	exit 3
+	fi
+
+	if [ $X11 ] && [ "$X11" == "mac" ]; then
+		printf "Start X11 server ? (y/N) " -n
+		read answer
+		if [ "$answer" == "y" ]; then
+			printf "X11 server (starting..)\n"
+			if [ "$X11" == "mac" ]; then
+				run_mac_x11_server
+			else
+				run_win_x11_server
+			fi
+		fi
+	fi
+
+	DOCKER_RUNNING=$(docker inspect --format="{{.State.Running}}" $CONTAINER 2> /dev/null)
+	if [ $? -eq 1 ]; then
+		printf "Container does not exist (creating..)\n"
+		docker_run
+	elif [ "$DOCKER_RUNNING" == "false" ]; then
+		printf "Container is not running (starting..)\n"
+		docker_start
+		docker_exec
+	elif [ "$DOCKER_RUNNING" == "true" ]; then
+		printf "Container already running (connecting..)\n"
+		docker_exec
+	fi
+}
+main

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# TAG IMAGE
+CMD='{{range $index, $value := .Config.Env}}'
+	CMD+='{{if eq (index (split $value "=") 0) "IMAGE_VERSION" }}'
+		CMD+='{{range $i, $part := (split $value "=")}}'
+			CMD+='{{if gt $i 1}}'
+				CMD+='{{print "="}}'
+			CMD+='{{end}}'
+			CMD+='{{if gt $i 0}}'
+				CMD+='{{print $part}}'
+			CMD+='{{end}}'
+		CMD+='{{end}}'
+	CMD+='{{end}}'
+CMD+='{{end}}'
+IMAGE_VERSION=$(docker inspect --format="$CMD" badisi/hoodoo)
+docker tag badisi/hoodoo badisi/hoodoo:$IMAGE_VERSION
+
+# PUSH IMAGE TO DOCKER-HUB
+docker login -u badisi
+docker push badisi/hoodoo:$IMAGE_VERSION
