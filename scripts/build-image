@@ -1,7 +1,0 @@
-#!/bin/sh
-
-SCRIPT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-cd "$SCRIPT_PATH"
-
-IMAGE_NAME="badisi/hoodoo"
-. ../hooks/build
