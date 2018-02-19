@@ -15,4 +15,4 @@ docker build \
 	--build-arg JAVA_BUILD="12" \
 	--build-arg JAVA_DOWNLOAD_HASH="0da788060d494f5095bf8624735fa2f1" \
 	--build-arg MAVEN="3.5.2" \
-	-t "badisi/hoodoo" .
+	-t $IMAGE_NAME .
