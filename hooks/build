@@ -2,14 +2,14 @@
 
 docker build \
 	--no-cache \
-	--build-arg VERSION="1.0.0" \
+	--build-arg VERSION="1.0.1" \
 	--build-arg NVM="0.33.8" \
 	--build-arg NODE="9.5.0" \
 	--build-arg YARN="1.3.2" \
 	--build-arg YO="2.0.1" \
 	--build-arg PLOP="1.9.1" \
 	--build-arg ELECTRON="1.8.2" \
-	--build-arg ANGULAR_CLI="1.6.8" \
+	--build-arg ANGULAR_CLI="1.7.0" \
 	--build-arg JAVA_MAJOR="8" \
 	--build-arg JAVA_MINOR="162" \
 	--build-arg JAVA_BUILD="12" \
