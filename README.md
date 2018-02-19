@@ -6,7 +6,6 @@ This **docker image** aims to deliver a tailored environment for web projects de
 
 This image include the following dependencies :
 
-- git
 - nvm
 - node
 - yarn
@@ -16,6 +15,7 @@ This image include the following dependencies :
 - angular-cli
 - java
 - maven
+- git
 
 ## How to use it ?
 
@@ -61,7 +61,7 @@ This image include the following dependencies :
    > sh hoodoo
    ```  
 
-## Bonus: run GUI applications
+## Bonus : run GUI applications
 
 **macOS platform**   
 
