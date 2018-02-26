@@ -29,7 +29,7 @@ This image include the following dependencies :
 
 **Getting started** :   
 
-1. Download and modify the **hoodoo** script provided in this repository   
+1. Download and modify the [**hoodoo**](https://github.com/Badisi/docker-hoodoo/blob/master/scripts/hoodoo) script provided in this repository   
 
    ```javascript
    // mandatory
